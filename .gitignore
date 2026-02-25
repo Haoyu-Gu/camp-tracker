@@ -1,0 +1,50 @@
+# 个人数据（不上传）
+个人资料/
+school_status.json
+school_deadlines.json
+
+# 爬虫运行时数据
+monitor/seen_items.json
+monitor/updates.md
+monitor/error.log
+monitor/launchd_stdout.log
+monitor/launchd_stderr.log
+*.plist
+
+# 学校文件夹（含个人套磁邮件等）
+上交AI/
+上交计算机/
+中科院自动化所/
+中科院计算所/
+北大智能/
+北大计算机/
+北大软微/
+南大智科/
+南大计算机/
+浙大计算机/
+清华电子/
+清华自动化/
+清华计算机/
+清华深圳/
+复旦/
+人大高瓴/
+
+# 汇总文件
+陶瓷邮件汇总.md
+院校网址汇总.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/

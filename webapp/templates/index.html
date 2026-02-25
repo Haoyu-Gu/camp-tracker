@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保研夏令营信息中心</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-card-hover: #273548;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #818cf8;
+            --accent-hover: #6366f1;
+            --accent-light: rgba(129, 140, 248, 0.15);
+            --border: #334155;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --info: #38bdf8;
+        }
+
+        .light-theme {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-light: rgba(99, 102, 241, 0.1);
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #0ea5e9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* Header */
+        .app-header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .app-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: var(--bg-card-hover); border-color: var(--accent); }
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .btn-accent:hover { background: var(--accent-hover); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-icon {
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+        }
+        .btn-icon:hover { background: var(--accent-light); border-color: var(--border); }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .nav-tab {
+            padding: 6px 16px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .nav-tab:hover { color: var(--text-primary); background: var(--accent-light); }
+        .nav-tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Layout */
+        .app-content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .profile-info h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .profile-info p { color: var(--text-secondary); font-size: 14px; }
+
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px 20px;
+            background: var(--accent-light);
+            border-radius: 12px;
+            min-width: 90px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Papers */
+        .papers-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .paper-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .paper-tag.accepted { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+        .paper-tag.review { background: rgba(251, 191, 36, 0.15); color: var(--warning); }
+
+        /* School Grid */
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .school-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .school-card:hover {
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .school-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .school-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .school-dept {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-未开始 { background: rgba(100, 116, 139, 0.2); color: var(--text-muted); }
+        .status-准备中 { background: rgba(56, 189, 248, 0.15); color: var(--info); }
+        .status-待套磁 { background: rgba(219, 130, 255, 0.15); color: #a855f7; }
+        .status-已套磁 { background: rgba(251, 191, 36, 0.15); color: var(--warning); }
+        .status-材料准备中 { background: rgba(129, 140, 248, 0.15); color: var(--accent); }
+        .status-材料已提交 { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+        .status-已入营 { background: rgba(52, 211, 153, 0.25); color: var(--success); }
+        .status-已获offer { background: rgba(52, 211, 153, 0.35); color: #059669; font-weight: 700; }
+        .status-已放弃 { background: rgba(248, 113, 113, 0.15); color: var(--danger); }
+        .status-待定 { background: rgba(251, 191, 36, 0.25); color: var(--warning); }
+
+        .status-badge { cursor: pointer; position: relative; }
+        .status-badge:hover { opacity: 0.8; filter: brightness(1.1); }
+
+        .status-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            z-index: 999;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            padding: 6px 0;
+            min-width: 140px;
+            display: none;
+        }
+        .status-dropdown.show { display: block; }
+        .status-dropdown-item {
+            padding: 6px 14px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: background 0.15s;
+        }
+        .status-dropdown-item:hover { background: var(--accent-light); }
+        .status-dropdown-item.active { color: var(--accent); font-weight: 600; }
+        .status-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+        .school-card-links {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .school-card-links a {
+            font-size: 12px;
+            color: var(--accent);
+            text-decoration: none;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--accent-light);
+            transition: all 0.2s;
+        }
+
+        .school-card-links a:hover { background: var(--accent); color: white; }
+
+        .school-card-notice {
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            line-height: 1.5;
+        }
+
+        .school-card-notice .notice-date {
+            color: var(--accent);
+            font-weight: 500;
+            margin-right: 6px;
+        }
+
+        .school-card-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .school-card-meta span i { margin-right: 4px; }
+
+        /* Notices Page */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus { border-color: var(--accent); }
+        .search-box input::placeholder { color: var(--text-muted); }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            min-width: 160px;
+        }
+
+        .filter-select:focus { border-color: var(--accent); }
+
+        .notice-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .notice-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s;
+        }
+
+        .notice-item:hover {
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+        }
+
+        .notice-item.highlight {
+            border-left: 3px solid var(--accent);
+        }
+
+        .notice-source-tag {
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            background: var(--accent-light);
+            color: var(--accent);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .notice-content { flex: 1; min-width: 0; }
+
+        .notice-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .notice-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .notice-title a:hover { color: var(--accent); }
+
+        .notice-date-tag {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .notice-open {
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .notice-open:hover { color: var(--accent); }
+
+        /* Detail Page */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover { color: var(--accent); background: var(--accent-light); }
+
+        .detail-title { font-size: 24px; font-weight: 700; }
+        .detail-subtitle { font-size: 14px; color: var(--text-secondary); }
+
+        .detail-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .detail-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-section h3 i { color: var(--accent); }
+
+        .link-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .link-item:hover { background: var(--accent-light); }
+
+        .link-item a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .link-item a:hover { text-decoration: underline; }
+
+        .link-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .file-list { display: flex; flex-direction: column; gap: 6px; }
+
+        /* Professor cards */
+        .professor-list { display: flex; flex-direction: column; gap: 8px; }
+        .professor-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+        .professor-card.prof-replied { border-left: 3px solid var(--success); }
+        .professor-card.prof-draft { border-left: 3px solid #a855f7; }
+        .professor-card.prof-none { border-left: 3px solid var(--text-muted); }
+        .prof-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .prof-header:hover { background: rgba(99,102,241,0.05); }
+        .prof-name {
+            font-weight: 600;
+            font-size: 14px;
+            flex: 1;
+        }
+        .prof-name i { margin-right: 6px; color: var(--accent); }
+        .prof-status-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .prof-status-tag.prof-replied { background: rgba(52,211,153,0.15); color: var(--success); }
+        .prof-status-tag.prof-draft { background: rgba(168,85,247,0.15); color: #a855f7; }
+        .prof-status-tag.prof-none { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+        .prof-expand {
+            transition: transform 0.2s;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .professor-card.expanded .prof-expand { transform: rotate(180deg); }
+        .prof-files {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 14px;
+        }
+        .professor-card.expanded .prof-files {
+            max-height: 500px;
+            padding: 0 14px 12px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .file-item:hover { border-color: var(--accent); background: var(--accent-light); }
+
+        .file-icon { color: var(--accent); font-size: 18px; width: 24px; text-align: center; }
+
+        .file-info { flex: 1; }
+        .file-name { font-size: 14px; font-weight: 500; }
+        .file-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Refresh Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 520px;
+            width: 90%;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-box h3 i { color: var(--accent); }
+
+        .refresh-output {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; }
+
+        /* Notice count badge */
+        .count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 0 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .profile-avatar { margin: 0 auto; }
+            .profile-stats { justify-content: center; flex-wrap: wrap; }
+            .school-grid { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; }
+            .search-box { min-width: 100%; }
+            .app-header { padding: 0 12px; }
+            .app-content { padding: 16px; }
+            .nav-tabs { overflow-x: auto; }
+        }
+
+        /* Transition for page switch */
+        .page { animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* University color coding */
+        .uni-清华 { border-left: 3px solid #82318E; } /* 清华紫 */
+        .uni-北大 { border-left: 3px solid #94070A; } /* 北大红 */
+        .uni-上交 { border-left: 3px solid #C8161E; } /* 交大红 RGB(200,22,30) */
+        .uni-浙大 { border-left: 3px solid #003DA5; } /* 求是蓝 */
+        .uni-南大 { border-left: 3px solid #5B2C8E; } /* 南大紫 */
+        .uni-中科院 { border-left: 3px solid #1661AB; } /* 中科院蓝 */
+        .uni-上海创智 { border-left: 3px solid #d97706; }
+        .uni-复旦 { border-left: 3px solid #004B97; } /* 复旦蓝 */
+        .uni-人大 { border-left: 3px solid #97002E; } /* 人大红 */
+
+        .results-count {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 8px 0;
+        }
+
+        /* Deadline */
+        .deadline-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        .deadline-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .deadline-tag:hover { filter: brightness(1.15); }
+        .deadline-urgent { background: rgba(248,113,113,0.2); color: var(--danger); }
+        .deadline-soon { background: rgba(251,191,36,0.2); color: var(--warning); }
+        .deadline-ok { background: rgba(52,211,153,0.15); color: var(--success); }
+        .deadline-passed { background: rgba(100,116,139,0.2); color: var(--text-muted); text-decoration: line-through; }
+        .deadline-none {
+            background: var(--accent-light);
+            color: var(--text-muted);
+            border: 1px dashed var(--border);
+        }
+
+        /* Deadline date picker popup */
+        .deadline-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 999;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            padding: 10px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .deadline-popup input[type="date"] {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+        .deadline-popup button {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .deadline-popup .dl-save { background: var(--accent); color: white; }
+        .deadline-popup .dl-clear { background: var(--bg-primary); color: var(--text-muted); border: 1px solid var(--border); }
+
+        /* Category tags */
+        .category-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 6px;
+            white-space: nowrap;
+        }
+        .cat-夏令营 { background: rgba(129,140,248,0.15); color: var(--accent); }
+        .cat-预推免 { background: rgba(56,189,248,0.15); color: var(--info); }
+        .cat-录取公示 { background: rgba(52,211,153,0.15); color: var(--success); }
+        .cat-招生简章 { background: rgba(251,191,36,0.15); color: var(--warning); }
+        .cat-博士招生 { background: rgba(192,132,252,0.15); color: #c084fc; }
+        .cat-其他 { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+
+        /* Category filter pills */
+        .category-filters {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .cat-pill {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .cat-pill:hover { border-color: var(--accent); color: var(--text-primary); }
+        .cat-pill.active { background: var(--accent); color: white; border-color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+    <h1><i class="fas fa-graduation-cap" style="margin-right:8px;"></i>保研夏令营信息中心</h1>
+    <div class="header-actions">
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-page="dashboard" onclick="switchPage('dashboard')">
+                <i class="fas fa-th-large"></i> 总览
+            </button>
+            <button class="nav-tab" data-page="notices" onclick="switchPage('notices')">
+                <i class="fas fa-bell"></i> 通知
+            </button>
+        </nav>
+        <button class="btn btn-accent" onclick="refreshCrawler()" id="refreshBtn">
+            <i class="fas fa-sync-alt"></i> 刷新数据
+        </button>
+        <button class="btn-icon btn" onclick="toggleTheme()" title="切换主题">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+    </div>
+</header>
+
+<!-- Content -->
+<main class="app-content">
+
+    <!-- Dashboard Page -->
+    <div class="page active" id="page-dashboard">
+        <!-- Profile Card -->
+        <div class="profile-card" id="profileCard">
+            <div class="profile-avatar">顾</div>
+            <div class="profile-info">
+                <h2 id="profileName">加载中...</h2>
+                <p id="profileMeta"></p>
+                <div class="papers-bar" id="papersBar"></div>
+            </div>
+            <div class="profile-stats" id="profileStats"></div>
+        </div>
+
+        <!-- School Grid -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+            <h2 style="font-size:18px; font-weight:600;">
+                <i class="fas fa-university" style="color:var(--accent); margin-right:8px;"></i>目标院校
+                <span class="count-badge" id="schoolCount">15</span>
+            </h2>
+            <div style="display:flex; gap:8px; font-size:12px; color:var(--text-muted);">
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);margin-right:4px;"></span>已提交</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:4px;"></span>准备中</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warning);margin-right:4px;"></span>已套磁</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#a855f7;margin-right:4px;"></span>待套磁</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--text-muted);margin-right:4px;"></span>未开始</span>
+            </div>
+        </div>
+        <div class="school-grid" id="schoolGrid"></div>
+    </div>
+
+    <!-- Notices Page -->
+    <div class="page" id="page-notices">
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索通知标题..." oninput="filterNotices()">
+            </div>
+            <select class="filter-select" id="schoolFilter" onchange="filterNotices()">
+                <option value="">全部学校</option>
+            </select>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);cursor:pointer;">
+                <input type="checkbox" id="recentOnly" onchange="filterNotices()" style="accent-color:var(--accent);">
+                仅显示 2025-2026
+            </label>
+        </div>
+        <div class="category-filters" id="categoryFilters">
+            <span class="cat-pill active" data-cat="" onclick="setCategoryFilter(this, '')">全部</span>
+            <span class="cat-pill" data-cat="夏令营" onclick="setCategoryFilter(this, '夏令营')">夏令营</span>
+            <span class="cat-pill" data-cat="预推免" onclick="setCategoryFilter(this, '预推免')">预推免</span>
+            <span class="cat-pill" data-cat="录取公示" onclick="setCategoryFilter(this, '录取公示')">录取公示</span>
+            <span class="cat-pill" data-cat="招生简章" onclick="setCategoryFilter(this, '招生简章')">招生简章</span>
+            <span class="cat-pill" data-cat="博士招生" onclick="setCategoryFilter(this, '博士招生')">博士招生</span>
+            <span class="cat-pill" data-cat="其他" onclick="setCategoryFilter(this, '其他')">其他</span>
+        </div>
+        <div class="results-count" id="resultsCount"></div>
+        <div class="notice-list" id="noticeList"></div>
+    </div>
+
+    <!-- School Detail Page -->
+    <div class="page" id="page-detail">
+        <div class="detail-header">
+            <span class="back-btn" onclick="switchPage('dashboard')"><i class="fas fa-arrow-left"></i></span>
+            <div>
+                <div class="detail-title" id="detailTitle"></div>
+                <div class="detail-subtitle" id="detailSubtitle"></div>
+            </div>
+            <span class="status-badge" id="detailStatus" style="margin-left:auto;"></span>
+        </div>
+        <div id="detailContent"></div>
+    </div>
+
+</main>
+
+<!-- Refresh Modal -->
+<div class="modal-overlay" id="refreshModal">
+    <div class="modal-box">
+        <h3><i class="fas fa-robot"></i> 爬虫运行状态</h3>
+        <div id="refreshStatus" style="margin-bottom:12px; font-size:14px; color:var(--text-secondary);">
+            <span class="spinner"></span> 正在运行爬虫，请稍候...
+        </div>
+        <div class="refresh-output" id="refreshOutput">等待输出...</div>
+        <div style="margin-top:16px; text-align:right;">
+            <button class="btn" onclick="closeRefreshModal()">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== State ==========
+let allSchools = [];
+let allNotices = [];
+let currentTheme = localStorage.getItem('theme') || 'dark';
+let currentCategoryFilter = '';
+
+// ========== Init ==========
+document.addEventListener('DOMContentLoaded', () => {
+    applyTheme();
+    loadProfile();
+    loadSchools();
+    loadNotices();
+});
+
+// ========== Theme ==========
+function toggleTheme() {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', currentTheme);
+    applyTheme();
+}
+
+function applyTheme() {
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('themeIcon').className = 'fas fa-sun';
+    } else {
+        document.body.classList.remove('light-theme');
+        document.getElementById('themeIcon').className = 'fas fa-moon';
+    }
+}
+
+// ========== Navigation ==========
+function switchPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+    document.getElementById('page-' + page).classList.add('active');
+    const tab = document.querySelector(`.nav-tab[data-page="${page}"]`);
+    if (tab) tab.classList.add('active');
+}
+
+// ========== API Calls ==========
+async function loadProfile() {
+    try {
+        const res = await fetch('/api/profile');
+        const data = await res.json();
+
+        document.getElementById('profileName').textContent = data.name;
+        document.getElementById('profileMeta').innerHTML =
+            `${data.university} | ${data.major} | GPA: ${data.gpa} | 排名: ${data.rank}`;
+
+        // Papers
+        const papersHtml = data.papers.map(p => {
+            const cls = p.status === 'Accept' ? 'accepted' : 'review';
+            const icon = p.status === 'Accept' ? 'fa-check-circle' : 'fa-clock';
+            const note = p.note ? ` (${p.note})` : '';
+            return `<span class="paper-tag ${cls}"><i class="fas ${icon}"></i>${p.title}${note} - ${p.status}</span>`;
+        }).join('');
+        document.getElementById('papersBar').innerHTML = papersHtml;
+
+        // Stats
+        const accepted = data.papers.filter(p => p.status === 'Accept').length;
+        const review = data.papers.filter(p => p.status === 'Under Review').length;
+        document.getElementById('profileStats').innerHTML = `
+            <div class="stat-item">
+                <div class="stat-value">${data.gpa.split('/')[0].trim()}</div>
+                <div class="stat-label">GPA</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">${data.rank.split('/')[0].trim()}</div>
+                <div class="stat-label">年级排名</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">${accepted}</div>
+                <div class="stat-label">已发表论文</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">${review}</div>
+                <div class="stat-label">在审论文</div>
+            </div>
+            ${data.resume_available ? `<a href="/api/resume" target="_blank" class="stat-item" style="text-decoration:none;cursor:pointer;border:1px solid var(--border);">
+                <div class="stat-value" style="font-size:16px;"><i class="fas fa-file-pdf"></i></div>
+                <div class="stat-label">查看简历</div>
+            </a>` : ''}
+        `;
+    } catch (e) {
+        console.error('加载个人信息失败:', e);
+    }
+}
+
+async function loadSchools() {
+    try {
+        const res = await fetch('/api/schools');
+        allSchools = await res.json();
+        renderSchools();
+    } catch (e) {
+        console.error('加载学校信息失败:', e);
+    }
+}
+
+async function loadNotices() {
+    try {
+        const res = await fetch('/api/notices');
+        allNotices = await res.json();
+        populateSchoolFilter();
+        filterNotices();
+    } catch (e) {
+        console.error('加载通知失败:', e);
+    }
+}
+
+// ========== Render Schools ==========
+function getUniClass(university) {
+    if (university.includes('清华')) return 'uni-清华';
+    if (university.includes('北京大学')) return 'uni-北大';
+    if (university.includes('上海交通')) return 'uni-上交';
+    if (university.includes('浙江')) return 'uni-浙大';
+    if (university.includes('南京')) return 'uni-南大';
+    if (university.includes('中国科学院')) return 'uni-中科院';
+    if (university.includes('创智')) return 'uni-上海创智';
+    if (university.includes('复旦')) return 'uni-复旦';
+    if (university.includes('人民')) return 'uni-人大';
+    return '';
+}
+
+function renderSchools() {
+    const grid = document.getElementById('schoolGrid');
+    document.getElementById('schoolCount').textContent = allSchools.length;
+
+    // 按截止日期排序：有截止日期的排前面，日期近的排最前，无截止日期的保持原序
+    const sorted = [...allSchools].sort((a, b) => {
+        if (a.deadline && b.deadline) return a.deadline.localeCompare(b.deadline);
+        if (a.deadline) return -1;
+        if (b.deadline) return 1;
+        return 0;
+    });
+
+    grid.innerHTML = sorted.map(s => {
+        const uniClass = getUniClass(s.university);
+        const noticeHtml = s.latest_notice
+            ? `<div class="school-card-notice">
+                <span class="notice-date">${s.latest_notice.date || '近期'}</span>
+                ${escapeHtml(s.latest_notice.title)}
+               </div>`
+            : `<div class="school-card-notice" style="color:var(--text-muted);">暂无通知</div>`;
+
+        const deadlineHtml = renderDeadlineTag(s.id, s.deadline);
+
+        return `
+        <div class="school-card ${uniClass}" onclick="openSchoolDetail('${s.id}')">
+            <div class="school-card-header">
+                <div>
+                    <div class="school-name">${escapeHtml(s.university)}</div>
+                    <div class="school-dept">${escapeHtml(s.department)}</div>
+                </div>
+                <span class="status-badge status-${s.status}" onclick="event.stopPropagation(); toggleStatusDropdown('${s.id}', this)">${s.status}</span>
+            </div>
+            <div class="deadline-row" onclick="event.stopPropagation();" style="position:relative;">
+                ${deadlineHtml}
+            </div>
+            <div class="school-card-links">
+                ${s.official_url ? `<a href="${s.official_url}" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-globe"></i> 官网</a>` : ''}
+                ${s.admission_url ? `<a href="${s.admission_url}" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-user-graduate"></i> 招生</a>` : ''}
+            </div>
+            ${noticeHtml}
+            <div class="school-card-meta">
+                <span><i class="fas fa-bell"></i>${s.notice_count} 条通知</span>
+                <span><i class="fas fa-user-tie"></i>${s.professor_count || 0} 位导师</span>
+                <span><i class="fas fa-folder"></i>${s.file_count} 个文件</span>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ========== School Detail ==========
+async function openSchoolDetail(schoolId) {
+    switchPage('detail');
+
+    document.getElementById('detailTitle').textContent = '加载中...';
+    document.getElementById('detailSubtitle').textContent = '';
+    document.getElementById('detailContent').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
+
+    try {
+        const res = await fetch(`/api/school/${schoolId}`);
+        const data = await res.json();
+
+        document.getElementById('detailTitle').textContent = data.university;
+        document.getElementById('detailSubtitle').textContent = data.department;
+        const statusEl = document.getElementById('detailStatus');
+        statusEl.textContent = data.status;
+        statusEl.className = `status-badge status-${data.status}`;
+        statusEl.onclick = (e) => { e.stopPropagation(); toggleStatusDropdown(data.id, statusEl); };
+
+        let html = '';
+
+        // Links section
+        if (data.links && data.links.length > 0) {
+            html += `<div class="detail-section">
+                <h3><i class="fas fa-link"></i> 相关链接</h3>
+                <div class="link-list">
+                    ${data.links.map(l => `
+                        <div class="link-item">
+                            <span class="link-label">${escapeHtml(l.label)}</span>
+                            <a href="${l.url}" target="_blank">${l.url}</a>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+
+        // Notices section
+        if (data.notices && data.notices.length > 0) {
+            html += `<div class="detail-section">
+                <h3><i class="fas fa-bell"></i> 招生通知 <span class="count-badge">${data.notices.length}</span></h3>
+                <div class="notice-list">
+                    ${data.notices.map(n => {
+                        const isRecent = n.date && (n.date.startsWith('2026') || n.date.startsWith('2025'));
+                        return `<div class="notice-item ${isRecent ? 'highlight' : ''}">
+                            <div class="notice-content">
+                                <div class="notice-title"><a href="${n.url}" target="_blank">${escapeHtml(n.title)}</a></div>
+                                <div class="notice-date-tag">${n.date || '日期未知'} | ${escapeHtml(n.source || '')}</div>
+                            </div>
+                            <a href="${n.url}" target="_blank" class="notice-open"><i class="fas fa-external-link-alt"></i></a>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        } else {
+            html += `<div class="detail-section">
+                <h3><i class="fas fa-bell"></i> 招生通知</h3>
+                <div class="empty-state"><i class="fas fa-inbox"></i><p>暂无通知</p></div>
+            </div>`;
+        }
+
+        // Professors section
+        if (data.professors && data.professors.length > 0) {
+            html += `<div class="detail-section">
+                <h3><i class="fas fa-user-tie"></i> 导师套磁 <span class="count-badge">${data.professors.length}</span></h3>
+                <div class="professor-list">
+                    ${data.professors.map(p => {
+                        const statusCls = p.status === '已回复' ? 'prof-replied' : p.status === '待发送' ? 'prof-draft' : 'prof-none';
+                        return `<div class="professor-card ${statusCls}">
+                            <div class="prof-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                <span class="prof-name"><i class="fas fa-user-graduate"></i> ${escapeHtml(p.name)}</span>
+                                <span class="prof-status-tag ${statusCls}">${p.status}</span>
+                                <span class="prof-expand"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                            <div class="prof-files">
+                                ${p.files.map(f => {
+                                    const icon = getFileIcon(f.name);
+                                    return `<div class="file-item">
+                                        <span class="file-icon"><i class="fas ${icon}"></i></span>
+                                        <div class="file-info">
+                                            <div class="file-name"><a href="/api/file/${schoolId}/${encodeURIComponent(f.path)}" target="_blank" style="color:var(--text-primary);text-decoration:none;">${escapeHtml(f.name)}</a></div>
+                                            <div class="file-meta">${f.size_str} | ${f.modified}</div>
+                                        </div>
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        // Files section (school-level)
+        if (data.files && data.files.length > 0) {
+            html += `<div class="detail-section">
+                <h3><i class="fas fa-folder-open"></i> 学院资料 <span class="count-badge">${data.files.length}</span></h3>
+                <div class="file-list">
+                    ${data.files.map(f => {
+                        const icon = getFileIcon(f.name);
+                        return `<div class="file-item">
+                            <span class="file-icon"><i class="fas ${icon}"></i></span>
+                            <div class="file-info">
+                                <div class="file-name"><a href="/api/file/${schoolId}/${encodeURIComponent(f.path)}" target="_blank" style="color:var(--text-primary);text-decoration:none;">${escapeHtml(f.name)}</a></div>
+                                <div class="file-meta">${f.size_str} | ${f.modified}</div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        document.getElementById('detailContent').innerHTML = html;
+    } catch (e) {
+        document.getElementById('detailContent').innerHTML =
+            '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>加载失败</p></div>';
+    }
+}
+
+// ========== Notices ==========
+function populateSchoolFilter() {
+    const select = document.getElementById('schoolFilter');
+    const sources = [...new Set(allNotices.map(n => n.source).filter(Boolean))];
+    sources.sort();
+    sources.forEach(src => {
+        const opt = document.createElement('option');
+        opt.value = src;
+        opt.textContent = src;
+        select.appendChild(opt);
+    });
+}
+
+function filterNotices() {
+    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+    const schoolFilter = document.getElementById('schoolFilter').value;
+    const recentOnly = document.getElementById('recentOnly').checked;
+
+    let filtered = allNotices.filter(n => {
+        if (keyword && !n.title.toLowerCase().includes(keyword)) return false;
+        if (schoolFilter && n.source !== schoolFilter) return false;
+        if (recentOnly && n.date && !n.date.startsWith('2025') && !n.date.startsWith('2026')) return false;
+        if (currentCategoryFilter && n.category !== currentCategoryFilter) return false;
+        return true;
+    });
+
+    // Sort: with date first (descending), then without date
+    filtered.sort((a, b) => {
+        if (a.date && b.date) return b.date.localeCompare(a.date);
+        if (a.date) return -1;
+        if (b.date) return 1;
+        return 0;
+    });
+
+    document.getElementById('resultsCount').textContent = `共 ${filtered.length} 条通知`;
+
+    const list = document.getElementById('noticeList');
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>未找到匹配的通知</p></div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(n => {
+        const isRecent = n.date && (n.date.startsWith('2026') || n.date.startsWith('2025'));
+        const sourceTag = n.source ? n.source.replace(/\s+-\s+/, '<br>') : '未知';
+        const cat = n.category || '其他';
+        return `<div class="notice-item ${isRecent ? 'highlight' : ''}">
+            <div class="notice-source-tag">${sourceTag}</div>
+            <div class="notice-content">
+                <div class="notice-title"><a href="${n.url}" target="_blank">${escapeHtml(n.title)}</a><span class="category-tag cat-${cat}">${cat}</span></div>
+                <div class="notice-date-tag">${n.date || '日期未知'}</div>
+            </div>
+            <a href="${n.url}" target="_blank" class="notice-open"><i class="fas fa-external-link-alt"></i></a>
+        </div>`;
+    }).join('');
+}
+
+// ========== Refresh Crawler ==========
+async function refreshCrawler() {
+    const btn = document.getElementById('refreshBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> 运行中...';
+
+    const modal = document.getElementById('refreshModal');
+    modal.classList.add('active');
+    document.getElementById('refreshStatus').innerHTML = '<span class="spinner"></span> 正在运行爬虫，请稍候...';
+    document.getElementById('refreshOutput').textContent = '等待输出...';
+
+    try {
+        const res = await fetch('/api/refresh', { method: 'POST' });
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById('refreshStatus').innerHTML =
+                '<i class="fas fa-check-circle" style="color:var(--success);"></i> 爬虫运行完成';
+        } else {
+            document.getElementById('refreshStatus').innerHTML =
+                '<i class="fas fa-exclamation-circle" style="color:var(--danger);"></i> ' + data.message;
+        }
+
+        document.getElementById('refreshOutput').textContent = data.output || '(无输出)';
+
+        // Reload data
+        await loadSchools();
+        await loadNotices();
+    } catch (e) {
+        document.getElementById('refreshStatus').innerHTML =
+            '<i class="fas fa-times-circle" style="color:var(--danger);"></i> 请求失败';
+        document.getElementById('refreshOutput').textContent = e.message;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sync-alt"></i> 刷新数据';
+}
+
+function closeRefreshModal() {
+    document.getElementById('refreshModal').classList.remove('active');
+}
+
+// ========== Utils ==========
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const iconMap = {
+        'pdf': 'fa-file-pdf',
+        'doc': 'fa-file-word',
+        'docx': 'fa-file-word',
+        'xls': 'fa-file-excel',
+        'xlsx': 'fa-file-excel',
+        'ppt': 'fa-file-powerpoint',
+        'pptx': 'fa-file-powerpoint',
+        'md': 'fa-file-alt',
+        'txt': 'fa-file-alt',
+        'py': 'fa-file-code',
+        'jpg': 'fa-file-image',
+        'jpeg': 'fa-file-image',
+        'png': 'fa-file-image',
+        'zip': 'fa-file-archive',
+        'rar': 'fa-file-archive',
+    };
+    return iconMap[ext] || 'fa-file';
+}
+
+// ========== Status Dropdown ==========
+const ALL_STATUSES = ["未开始", "准备中", "待套磁", "已套磁", "材料准备中", "材料已提交", "已入营", "已获offer", "已放弃", "待定"];
+let currentDropdown = null;
+
+function toggleStatusDropdown(schoolId, badgeEl) {
+    // 关闭已有的
+    closeStatusDropdown();
+
+    const currentStatus = badgeEl.textContent.trim();
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'status-dropdown show';
+
+    ALL_STATUSES.forEach(status => {
+        const item = document.createElement('div');
+        item.className = 'status-dropdown-item' + (status === currentStatus ? ' active' : '');
+        item.textContent = status;
+        item.onclick = (e) => {
+            e.stopPropagation();
+            updateSchoolStatus(schoolId, status, badgeEl);
+            closeStatusDropdown();
+        };
+        dropdown.appendChild(item);
+    });
+
+    // 分隔线 + 恢复自动检测
+    const divider = document.createElement('div');
+    divider.className = 'status-dropdown-divider';
+    dropdown.appendChild(divider);
+
+    const autoItem = document.createElement('div');
+    autoItem.className = 'status-dropdown-item';
+    autoItem.innerHTML = '<i class="fas fa-magic" style="margin-right:4px;"></i>自动检测';
+    autoItem.style.color = 'var(--text-muted)';
+    autoItem.onclick = (e) => {
+        e.stopPropagation();
+        updateSchoolStatus(schoolId, '__auto__', badgeEl);
+        closeStatusDropdown();
+    };
+    dropdown.appendChild(autoItem);
+
+    badgeEl.style.position = 'relative';
+    badgeEl.appendChild(dropdown);
+    currentDropdown = dropdown;
+
+    // 点击外部关闭
+    setTimeout(() => document.addEventListener('click', closeStatusDropdown, { once: true }), 10);
+}
+
+function closeStatusDropdown() {
+    if (currentDropdown) {
+        currentDropdown.remove();
+        currentDropdown = null;
+    }
+}
+
+async function updateSchoolStatus(schoolId, status, badgeEl) {
+    try {
+        const res = await fetch(`/api/school/${schoolId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (data.success) {
+            badgeEl.textContent = data.status;
+            badgeEl.className = `status-badge status-${data.status}`;
+            badgeEl.onclick = (e) => { e.stopPropagation(); toggleStatusDropdown(schoolId, badgeEl); };
+            loadSchools();
+        }
+    } catch (e) {
+        console.error('更新状态失败:', e);
+    }
+}
+
+// ========== Deadline ==========
+function renderDeadlineTag(schoolId, deadline) {
+    if (!deadline) {
+        return `<span class="deadline-tag deadline-none" onclick="openDeadlinePicker('${schoolId}', this)"><i class="fas fa-clock"></i> 设置截止日期</span>`;
+    }
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const dl = new Date(deadline + 'T00:00:00');
+    const diff = Math.ceil((dl - today) / (1000 * 60 * 60 * 24));
+
+    let cls, text;
+    if (diff < 0) {
+        cls = 'deadline-passed';
+        text = `已截止 (${deadline})`;
+    } else if (diff === 0) {
+        cls = 'deadline-urgent';
+        text = `今天截止!`;
+    } else if (diff <= 3) {
+        cls = 'deadline-urgent';
+        text = `${diff}天后截止 (${deadline})`;
+    } else if (diff <= 14) {
+        cls = 'deadline-soon';
+        text = `${diff}天后截止 (${deadline})`;
+    } else {
+        cls = 'deadline-ok';
+        text = `${diff}天后截止 (${deadline})`;
+    }
+    return `<span class="deadline-tag ${cls}" onclick="openDeadlinePicker('${schoolId}', this)"><i class="fas fa-clock"></i> ${text}</span>`;
+}
+
+let currentDeadlinePicker = null;
+
+function openDeadlinePicker(schoolId, el) {
+    closeDeadlinePicker();
+    const row = el.closest('.deadline-row');
+    const school = allSchools.find(s => s.id === schoolId);
+    const currentVal = school ? school.deadline : '';
+
+    const popup = document.createElement('div');
+    popup.className = 'deadline-popup';
+    popup.innerHTML = `
+        <input type="date" value="${currentVal}" id="dlInput_${schoolId}">
+        <button class="dl-save" onclick="saveDeadline('${schoolId}')">确定</button>
+        <button class="dl-clear" onclick="clearDeadline('${schoolId}')">清除</button>
+    `;
+    row.appendChild(popup);
+    currentDeadlinePicker = popup;
+    setTimeout(() => document.addEventListener('click', _closeDeadlineOnOutside, { once: true }), 10);
+}
+
+function _closeDeadlineOnOutside(e) {
+    if (currentDeadlinePicker && !currentDeadlinePicker.contains(e.target)) {
+        closeDeadlinePicker();
+    } else if (currentDeadlinePicker) {
+        setTimeout(() => document.addEventListener('click', _closeDeadlineOnOutside, { once: true }), 10);
+    }
+}
+
+function closeDeadlinePicker() {
+    if (currentDeadlinePicker) {
+        currentDeadlinePicker.remove();
+        currentDeadlinePicker = null;
+    }
+}
+
+async function saveDeadline(schoolId) {
+    const input = document.getElementById('dlInput_' + schoolId);
+    const deadline = input ? input.value : '';
+    try {
+        await fetch(`/api/school/${schoolId}/deadline`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deadline })
+        });
+        closeDeadlinePicker();
+        const school = allSchools.find(s => s.id === schoolId);
+        if (school) school.deadline = deadline;
+        renderSchools();
+    } catch (e) {
+        console.error('更新截止日期失败:', e);
+    }
+}
+
+async function clearDeadline(schoolId) {
+    try {
+        await fetch(`/api/school/${schoolId}/deadline`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deadline: '' })
+        });
+        closeDeadlinePicker();
+        const school = allSchools.find(s => s.id === schoolId);
+        if (school) school.deadline = '';
+        renderSchools();
+    } catch (e) {
+        console.error('清除截止日期失败:', e);
+    }
+}
+
+// ========== Category Filter ==========
+function setCategoryFilter(el, cat) {
+    currentCategoryFilter = cat;
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    filterNotices();
+}
+</script>
+
+</body>
+</html>
